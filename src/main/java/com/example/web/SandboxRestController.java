@@ -19,12 +19,12 @@ public class SandboxRestController {
 
     @RequestMapping("/sql/loop")
     public ResponseEntity<String> benchmarkDatabaseAccess() {
-        // IN句を使って1回で100,000件のレコードを取得
+        // IN句を使って1回で10,000件のレコードを取得
         long beforeOneTime = System.currentTimeMillis();
         benchmarkService.oneTimesDatabaseAccess();
         long afterOneTime = System.currentTimeMillis();
 
-        // 100,000回のループで1件ずつレコードを取得
+        // 10,000回のループで1件ずつレコードを取得
         long beforeLoopTime = System.currentTimeMillis();
         benchmarkService.tenThousandTimesDatabaseAccess();
         long afterLoopTime = System.currentTimeMillis();

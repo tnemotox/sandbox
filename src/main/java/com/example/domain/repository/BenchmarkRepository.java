@@ -11,7 +11,9 @@ import java.util.List;
 @Repository
 public interface BenchmarkRepository extends JpaRepository<BenchmarkEntity, Integer> {
 
+    // SELECT * FROM benchmark WHERE id = #{id}
     BenchmarkEntity findById(int id);
 
+    // SELECT * FROM benchmark WHERE id IN (#{...ids})
     List<BenchmarkEntity> findByIdIn(List<Integer> ids);
 }
