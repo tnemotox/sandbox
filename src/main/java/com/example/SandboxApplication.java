@@ -22,7 +22,7 @@ public class SandboxApplication {
     public CommandLineRunner demo(BenchmarkRepository repository) {
         return (args) -> {
             repository.save(new BenchmarkEntity(1, 1));
-            repository.save(new BenchmarkEntity(500000, 500000));
-            repository.save(new BenchmarkEntity(900000, 900000));
+            repository.save(new BenchmarkEntity(2, 2));
+            repository.save(new BenchmarkEntity(3, 3));
         };
     }}
