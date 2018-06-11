@@ -1,24 +1,36 @@
 package com.example.web;
 
+import com.example.domain.model.EmployeeEntity;
+import com.example.domain.model.MappingHelper;
+import com.example.domain.repository.EmployeeRepository;
 import com.example.domain.service.BenchmarkService;
-import com.example.domain.service.BenchmarkServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/benchmark")
 @RequiredArgsConstructor
 public class SandboxRestController {
 
     private final BenchmarkService benchmarkService;
 
-    @RequestMapping("/sql/loop")
-    public ResponseEntity<String> benchmarkDatabaseAccess() {
+    private final EmployeeRepository employeeRepository;
+
+    @RequestMapping("/mybatisToMap")
+    public ResponseEntity<Map> mybatisToMap() {
+        List<MappingHelper<Integer, EmployeeEntity>> mapperList = employeeRepository.findAllByIds(Arrays.asList(1, 2));
+        Map<Integer, EmployeeEntity> employeeMap = MappingHelper.toMap(mapperList);
+        return ResponseEntity.ok().body(employeeMap);
+    }
+
+    @RequestMapping("/benchmark/sql/loop")
+    public ResponseEntity<Map> benchmarkDatabaseAccess() {
         // IN句を使って1回で10,000件のレコードを取得
         long beforeOneTime = System.currentTimeMillis();
         benchmarkService.oneTimesDatabaseAccess();
@@ -44,6 +56,6 @@ public class SandboxRestController {
 
         result.put("oneTimeSecond", afterOneTime - beforeOneTime);
         result.put("loopTimeSecond", afterLoopTime - beforeLoopTime);
-        return ResponseEntity.status(200).body(result.toString());
+        return ResponseEntity.status(200).body(result);
     }
 }

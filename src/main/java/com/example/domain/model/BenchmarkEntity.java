@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-@Entity
 @Data
+@Entity
 @Table(name = "benchmark")
 public class BenchmarkEntity {
 

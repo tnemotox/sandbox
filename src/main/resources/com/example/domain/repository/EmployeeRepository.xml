@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.domain.repository.EmployeeRepository">
+
+    <select id="findAllByIds" resultMap="employeeMapHelper">
+        SELECT
+          e.id employeeId,
+          e.name employeeName,
+          e.mail_address mailAddress,
+          d.id departmentId,
+          d.name departmentName,
+          sd.id subDepartmentId,
+          sd.name subDepartmentName
+        FROM
+          employee e
+        LEFT JOIN
+          department d
+        ON
+          e.department_id = d.id
+        LEFT JOIN (
+          SELECT
+            d2.id,
+            d2.name,
+            sd2.employee_id
+          FROM
+            sub_department sd2
+          INNER JOIN
+            department d2
+          ON
+            d2.id = sd2.department_id
+          WHERE
+            sd2.employee_id IN
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+              #{id}
+            </foreach>
+        ) sd
+        ON
+          e.id = sd.employee_id
+        WHERE
+          e.id IN
+          <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+          </foreach>
+    </select>
+
+    <resultMap id="employeeMapHelper" type="MappingHelper">
+        <id property="key" column="employeeId" javaType="String"/>
+        <association property="value" resultMap="employeeMap"/>
+    </resultMap>
+
+    <resultMap id="employeeMap" type="EmployeeEntity">
+        <id property="id" column="employeeId"/>
+        <result property="name" column="employeeName"/>
+        <result property="mailAddress" column="mailAddress"/>
+        <result property="departmentId" column="departmentId"/>
+        <result property="departmentName" column="departmentName"/>
+        <collection property="subDepartments" ofType="DepartmentEntity">
+            <id property="id" column="subDepartmentId"/>
+            <result property="name" column="subDepartmentName"/>
+        </collection>
+    </resultMap>
+</mapper>
